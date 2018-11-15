@@ -1,6 +1,5 @@
-# sys.path.append("/home/luis/Documentos/interactivos-codigo/tile_writer.0.2.1")
 # tile_writer.py
-# Version 0.2.1 2015-08-28
+# Version 0.3 Oct 2018
 # Copyright 2015 Alexander Hajnal
 
 # Generates slippy map tiles from within QGIS
@@ -13,10 +12,10 @@
 # Start user-editable settings
 
 # Minimum zoom level
-start_z = 7
+start_z = 12
 
 # Maximum zoom level
-end_z = 12
+end_z = 17
 
 # How many map tiles to place in each regional tile
 # (the actual number of map tiles per regional tile is step * step)
@@ -32,13 +31,14 @@ step = 16
 border = 2
 
 # Directory to write the regional images and level subdirectories to
-output_path = '.'
+output_path = '/home/luis/Documentos/interactivos-codigo/tile_writer.0.3.0/test/madrid'
 
 # Path of shapefile defining the area of interest
 # The extent of the shapefile is used to limit rendering to a particular area.
 # Note that no clipping is done so at lower zoom levels tiles from outside the 
 # area of interest will be generated.
-area_of_interest = '/home/luis/Documentos/GIS/prueba-mozambique/area-of-interest.shp'
+# area_of_interest = '/home/luis/Documentos/GIS/madrid-bbox/madrid-bbox.shp'
+area_of_interest = '/home/luis/Documentos/GIS/madrid-bbox/madrid-bbox.shp'
 
 # Filename convention to follow
 #tile_format = 'google'
@@ -75,12 +75,7 @@ borderRect = borderLayer.extent()
 borderCRS = borderLayer.crs()
 WGS84 = QgsCoordinateReferenceSystem('EPSG:4326')
 
-
-# try:
-# 	mapRenderer = qgis.utils.iface.mapCanvas().mapSettings().destinationCrs()
-# except:
 mapRenderer = qgis.utils.iface.mapCanvas()#.mapSettings().destinationCrs()
-print(mapRenderer)
 
 mapRect = QgsCoordinateTransform(borderCRS, WGS84, QgsProject.instance()).transform(borderRect) # WGS84
 
@@ -130,7 +125,7 @@ for z in range(start_z, end_z+1, 1):
     
     print
     print("While generating the regional tiles, QGIS may appear to have locked up.")
-    print("This is not the case.  Please be patient.")
+    print("This is not the case. Please be patient.")
     print
     print("Generating regional tiles... (%i x %i tiles -> %i x %i regional tiles)" % (tx_max-tx_min+1, ty_max-ty_min+1, math.ceil((tx_max-tx_min+1.0)/step), math.ceil((ty_max-ty_min+1.0)/step)))
     total_regional_tiles = 0
@@ -147,18 +142,15 @@ for z in range(start_z, end_z+1, 1):
                 sys.stdout.write("o")
             else:
                 image = QImage(width, height, QImage.Format_ARGB32_Premultiplied)
-                print(mapRenderer.layers())
+
                 settings = QgsMapSettings()
-                # settings.setCrsTransformEnabled(True)
                 settings.setOutputDpi(95.0)
                 settings.setOutputImageFormat(QImage.Format_ARGB32_Premultiplied)
                 settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
-                # settings.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4326'))
                 settings.setOutputSize(QSize(width, height))
                 settings.setLayers(mapRenderer.layers())
                 settings.setFlag(QgsMapSettings.DrawLabeling, True)
-                # settings.setMapUnits(QGis.Meters)
-                settings.setBackgroundColor(QColor(127, 127, 127, 0))
+                settings.setBackgroundColor(QColor(255, 255, 255, 1))
                 
                 tileRect = QgsRectangle(lat_min, lon_min, lat_max, lon_max)
                 settings.setExtent(tileRect)
