@@ -21,8 +21,7 @@ Advantages of this program:
  - Does not exhibit the rendering issues that QTiles has at tile edges:
    - Does not truncate point icons.
    - Labels don't shift.
-   - Patterned lines display correctly.
-   - **Does not work in QGIS 3**.
+   - Patterned lines display correctly
  - Fast: 20 minutes to render a complex 60km x 70km topographic map with 
    roads, water, POIs, etc. from levels 5 through 15 on a 3.5GHz i7.
  - Resistant to the QGIS bug that causes raster layers to sometimes not be 
